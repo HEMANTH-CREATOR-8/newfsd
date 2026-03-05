@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Local Services Booking App</title>
+
+<!-- ICON LIBRARY -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+body{
+font-family:Arial, Helvetica, sans-serif;
+margin:0;
+background:#f4f6f9;
+text-align:center;
+}
+
+header{
+background:#2c7be5;
+color:white;
+padding:20px;
+}
+
+.page{
+display:none;
+padding:30px;
+}
+
+.active{
+display:block;
+}
+
+input,textarea{
+display:block;
+margin:10px auto;
+padding:10px;
+width:260px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+background:#2c7be5;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1749a3;
+}
+
+.services{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:20px;
+margin-top:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+width:170px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.card button{
+background:#28a745;
+}
+
+.service-icon{
+font-size:40px;
+color:#2c7be5;
+margin-bottom:10px;
+display:block;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:10px;
+width:320px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+.link{
+color:#2c7be5;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Local Services Booking App</h1>
+<p>Book trusted professionals near you</p>
+</header>
+
+<!-- REGISTRATION -->
+
+<div id="registerPage" class="page active">
+
+<div class="box">
+
+<h2>Create Account</h2>
+
+<input type="text" id="regName" placeholder="Full Name">
+<input type="email" id="regEmail" placeholder="Email">
+<input type="password" id="regPassword" placeholder="Password">
+
+<button onclick="register()">Register</button>
+
+<p id="regMsg"></p>
+
+<p>Already have account?
+<span class="link" onclick="showPage('loginPage')">Login</span>
+</p>
+
+</div>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="page">
+
+<div class="box">
+
+<h2>User Login</h2>
+
+<input type="email" id="loginEmail" placeholder="Email">
+<input type="password" id="loginPassword" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p id="loginMsg"></p>
+
+<p>No account?
+<span class="link" onclick="showPage('registerPage')">Register</span>
+</p>
+
+</div>
+
+</div>
+
+
+<!-- SERVICES -->
+
+<div id="servicePage" class="page">
+
+<h2>Select a Service</h2>
+
+<div class="services">
+
+<div class="card">
+<i class="fa-solid fa-bolt service-icon"></i>
+<h3>Electrician</h3>
+<button onclick="selectService('Electrician')">Book</button>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-wrench service-icon"></i>
+<h3>Plumber</h3>
+<button onclick="selectService('Plumber')">Book</button>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-broom service-icon"></i>
+<h3>Cleaning</h3>
+<button onclick="selectService('Cleaning')">Book</button>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-snowflake service-icon"></i>
+<h3>AC Repair</h3>
+<button onclick="selectService('AC Repair')">Book</button>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-hammer service-icon"></i>
+<h3>Carpenter</h3>
+<button onclick="selectService('Carpenter')">Book</button>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BOOKING -->
+
+<div id="bookingPage" class="page">
+
+<div class="box">
+
+<h2>Book Service</h2>
+
+<p id="serviceName"></p>
+
+<input type="text" id="custName" placeholder="Your Name">
+<input type="tel" id="custPhone" placeholder="Phone Number">
+<textarea id="custAddress" placeholder="Address"></textarea>
+
+<button onclick="confirmBooking()">Confirm Booking</button>
+
+</div>
+
+</div>
+
+
+<!-- CONFIRMATION -->
+
+<div id="confirmPage" class="page">
+
+<div class="box">
+
+<h2>Booking Confirmed ✅</h2>
+
+<p id="confirmDetails"></p>
+
+<button onclick="showPage('servicePage')">Book Another Service</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+let selectedService="";
+
+function showPage(pageId){
+
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active");
+});
+
+document.getElementById(pageId).classList.add("active");
+
+}
+
+
+/* REGISTER */
+
+function register(){
+
+let name=document.getElementById("regName").value;
+let email=document.getElementById("regEmail").value;
+let pass=document.getElementById("regPassword").value;
+
+if(name==""||email==""||pass==""){
+document.getElementById("regMsg").innerText="Fill all fields";
+return;
+}
+
+let user={
+name:name,
+email:email,
+password:pass
+};
+
+localStorage.setItem("user",JSON.stringify(user));
+
+document.getElementById("regMsg").innerText="Registration Successful ✔";
+
+setTimeout(()=>{
+showPage("loginPage");
+},1000);
+
+}
+
+
+/* LOGIN */
+
+function login(){
+
+let email=document.getElementById("loginEmail").value;
+let pass=document.getElementById("loginPassword").value;
+
+let storedUser=JSON.parse(localStorage.getItem("user"));
+
+if(!storedUser){
+document.getElementById("loginMsg").innerText="No user found. Register first.";
+return;
+}
+
+if(email==storedUser.email && pass==storedUser.password){
+
+showPage("servicePage");
+
+}else{
+
+document.getElementById("loginMsg").innerText="Invalid email or password";
+
+}
+
+}
+
+
+/* SERVICE SELECT */
+
+function selectService(service){
+
+selectedService=service;
+
+document.getElementById("serviceName").innerText="Selected Service: "+service;
+
+showPage("bookingPage");
+
+}
+
+
+/* BOOKING */
+
+function confirmBooking(){
+
+let name=document.getElementById("custName").value;
+let phone=document.getElementById("custPhone").value;
+let address=document.getElementById("custAddress").value;
+
+if(name==""||phone==""||address==""){
+alert("Fill all booking details");
+return;
+}
+
+document.getElementById("confirmDetails").innerHTML=
+
+"Service: "+selectedService+"<br><br>"+
+"Name: "+name+"<br><br>"+
+"Phone: "+phone+"<br><br>"+
+"Address: "+address;
+
+showPage("confirmPage");
+
+}
+
+</script>
+
+</body>
+</html>
